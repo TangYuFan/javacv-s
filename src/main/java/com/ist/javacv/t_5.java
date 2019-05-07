@@ -1,4 +1,4 @@
-package com.ist.demo;
+package com.ist.javacv;
 
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.FrameGrabber.Exception;

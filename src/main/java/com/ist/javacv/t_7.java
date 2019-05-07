@@ -1,4 +1,4 @@
-package com.ist.demo;
+package com.ist.javacv;
 
 
 import org.bytedeco.javacpp.opencv_core;
@@ -33,7 +33,7 @@ public class t_7 {
     //显示mat矩阵对应的图片
     public static void showImage(Mat mat){
         ToMat converter = new OpenCVFrameConverter.ToMat();
-        CanvasFrame canvas = new CanvasFrame("标题", 1);
+        CanvasFrame canvas = new CanvasFrame("人脸", 1);
         canvas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         canvas.showImage(converter.convert(mat));
     }

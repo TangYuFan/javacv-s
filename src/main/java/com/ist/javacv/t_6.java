@@ -1,4 +1,4 @@
-package com.ist.demo;
+package com.ist.javacv;
 
 
 import org.bytedeco.javacpp.opencv_core.*;

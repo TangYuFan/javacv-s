@@ -1,23 +1,18 @@
-package com.ist.demo;
+package com.ist.javacv;
 
-import org.bytedeco.javacv.CanvasFrame;
+import org.bytedeco.javacpp.avcodec;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.Java2DFrameConverter;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 
 
 /**
- * @desc : 获取rtsp流，帧图片保存
+ * @desc : 获取rtsp流，录制视频
  * @auth : TYF
  * @date : 2019-05-06 - 16:39
  */
-public class t_1 {
+public class t_3 {
 
 
     public static void frameRecord(String inputFile) throws Exception{
@@ -27,21 +22,21 @@ public class t_1 {
         grabber.setOption("rtsp_transport","tcp");
         grabber.setFrameRate(30);
         grabber.setVideoBitrate(3000000);
+        //输出地址/分辨率/是否录制音频
+        FFmpegFrameRecorder recorder = new FFmpegFrameRecorder("./target/mv.mp4", 1280, 720,1);
+        recorder.setFrameRate(30);
+        recorder.setVideoBitrate(3000000);
+        recorder.setVideoCodec(avcodec.AV_CODEC_ID_MPEG4);//打不开待解决
         try {
             grabber.start();
+            recorder.start();//录制器
             Frame frame = grabber.grabFrame();
             while (frame!= null) {
-                //图片保存
-                Java2DFrameConverter converter = new Java2DFrameConverter();
-                BufferedImage bi = converter.getBufferedImage(frame);
-                File output = new File("./target/pic_"+System.currentTimeMillis()+".png");
-                try {
-                    ImageIO.write(bi, "png", output);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                //按帧录制,可以加水印再保存
+                recorder.record(frame);
             }
             grabber.stop();
+            recorder.stop();
         }
         catch (Exception e){
             e.printStackTrace();

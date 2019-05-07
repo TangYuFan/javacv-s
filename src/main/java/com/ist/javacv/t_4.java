@@ -1,4 +1,4 @@
-package com.ist.demo;
+package com.ist.javacv;
 
 
 import org.bytedeco.javacpp.Loader;
@@ -6,7 +6,6 @@ import org.bytedeco.javacpp.avcodec;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_objdetect;
 import org.bytedeco.javacv.*;
-
 import javax.swing.*;
 
 /**

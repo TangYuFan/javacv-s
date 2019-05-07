@@ -1,80 +1,83 @@
 package com.ist.javacv;
 
-
-import org.bytedeco.javacpp.opencv_core.*;
-import org.bytedeco.javacpp.opencv_objdetect.*;
+import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_objdetect;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
+
 import javax.swing.*;
 
 import static org.bytedeco.javacpp.opencv_imgproc.*;
-import static org.bytedeco.javacpp.opencv_imgproc.equalizeHist;
+import static org.bytedeco.javacpp.opencv_imgproc.rectangle;
 
 /**
- * @desc : 人脸检测
+ * @desc : 视频人脸检测
  * @auth : TYF
- * @data : 2019-03-08 - 15:33
+ * @data : 2019/5/7 21:06
  */
 public class t_8 {
 
-    //内存溢出
-    static {
-        System.setProperty("org.bytedeco.javacpp.maxphysicalbytes","0");
-        System.setProperty("org.bytedeco.javacpp.maxbytes","0");
+    //mat转frame
+    public static Frame mat2frame(opencv_core.Mat mat){
+        OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
+        return converter.convert(mat);
     }
 
+
     //人脸检测
-    public static Mat detectFace(Mat src)
+    public static opencv_core.Mat detectFace(opencv_core.Mat src)
     {
         //面部识别级联分类器
-        CascadeClassifier cascade = new CascadeClassifier("E:\\work\\opencv\\opencv-master\\data\\lbpcascades\\lbpcascade_frontalface.xml");
+        opencv_objdetect.CascadeClassifier cascade = new opencv_objdetect.CascadeClassifier("E:\\work\\opencv\\opencv-master\\data\\lbpcascades\\lbpcascade_frontalface.xml");
         //矢量图初始化
-        Mat grayscr=new Mat();
+        opencv_core.Mat grayscr=new opencv_core.Mat();
         //彩图灰度化
         cvtColor(src,grayscr,COLOR_BGRA2GRAY);
         //均衡化直方图
         equalizeHist(grayscr,grayscr);
-        RectVector faces=new RectVector();
+        opencv_core.RectVector faces=new opencv_core.RectVector();
         cascade.detectMultiScale(grayscr, faces);
         //size就是检测到的人脸个数
         for(int i=0;i<faces.size();i++)
         {
-            Rect face_i=faces.get(i);
-            rectangle(src, face_i, new Scalar(0, 0, 255, 1));
+            opencv_core.Rect face_i=faces.get(i);
+            rectangle(src, face_i, new opencv_core.Scalar(0, 0, 255, 1));
         }
         //显示释放否则内存溢出
         grayscr.release();
         return src;
     }
 
+
     //读取视频
-    public static void frameRecord(String inputFile) throws Exception{
+    public static void showMp4(String inputFile) throws Exception{
         //读取视频
         FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inputFile);
         try {
             grabber.start();
             //new窗口
-            CanvasFrame canvas = new CanvasFrame("视频");
+            CanvasFrame canvas = new CanvasFrame("人脸");
             canvas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             canvas.setAlwaysOnTop(true);
-            Frame frame = grabber.grabImage();
+            Frame frame = grabber.grabFrame();
             OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
-            while (true) {
+            while (frame!=null && true) {
+
                 if(!canvas.isEnabled())
                 {//窗口是否关闭
                     grabber.stop();
                     System.exit(0);
                 }
                 //frame转mat
-                Mat scr=converter.convertToMat(frame);
+                opencv_core.Mat scr = converter.convertToMat(grabber.grabImage());
                 //人脸检测
-                detectFace(scr);
+                opencv_core.Mat de = detectFace(scr);
                 //mat转frame
-                frame =converter.convert(scr);
-                //按帧显示
-                canvas.showImage(grabber.grabFrame());
+                canvas.showImage(mat2frame(de));
+                //canvas.showImage(grabber.grabImage());
+                System.out.println("show");
             }
         }
         catch (Exception e){
@@ -87,10 +90,14 @@ public class t_8 {
     }
 
 
-    public static void main(String[] args) throws Exception{
-        //本地视频文件、rtsp地址、rtmp地址
-        String inputFile = "E:\\work\\vlc\\test.mp4";
-        frameRecord(inputFile);
+
+    public static void main(String args[]) throws Exception{
+
+        //本地视频
+        String in = "E:\\work\\vlc\\test.mp4";
+        showMp4(in);
+
     }
 
 }
+
