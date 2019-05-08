@@ -1,21 +1,22 @@
 package com.ist.javacv;
 
-
 import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_objdetect;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
-
 import javax.swing.*;
 
+import static org.bytedeco.javacpp.opencv_core.CV_32S;
 import static org.bytedeco.javacpp.opencv_imgcodecs.IMREAD_COLOR;
 import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
+import static org.bytedeco.javacpp.opencv_imgcodecs.imwrite;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 /**
- * @desc : 单个图片人脸检测
+ * @desc : 单个图片人脸检测，同尺寸保存人脸截图
  * @auth : TYF
  * @date : 2019-05-07 - 9:15
  */
@@ -42,7 +43,7 @@ public class t_7 {
     public static Mat detectFace(Mat src)
     {
         //面部识别级联分类器
-        opencv_objdetect.CascadeClassifier cascade = new opencv_objdetect.CascadeClassifier("E:\\work\\opencv\\opencv-master\\data\\lbpcascades\\lbpcascade_frontalface.xml");
+        opencv_objdetect.CascadeClassifier cascade = new opencv_objdetect.CascadeClassifier("D:\\my_opencv\\opencv\\data\\lbpcascades\\lbpcascade_frontalface.xml");
         //矢量图初始化
         Mat grayscr=new Mat();
         //彩图灰度化
@@ -55,26 +56,28 @@ public class t_7 {
         for(int i=0;i<faces.size();i++)
         {
             opencv_core.Rect face_i=faces.get(i);
+            //人脸画框
             rectangle(src, face_i, new opencv_core.Scalar(0, 0, 255, 1));
+            //人脸截图保存到本地(保持相同像素)
+            Mat face = new Mat(src,face_i);
+            Size size= new Size(55,55);
+            Mat _face = new Mat(size,CV_32S);
+            resize(face,_face,size);
+            imwrite("D:\\test\\face\\"+i+".jpg",_face);
         }
         //显示释放否则内存溢出
-        grayscr.release();
         return src;
     }
 
-
-
     public static void main(String args[]){
-
         //读取图片转mat
-        Mat mat = t_7.readImage("D:\\1.jpg");
+        Mat mat = readImage("D:\\test\\1.jpg");
         //显示mat图片
-        t_7.showImage(mat);
+        showImage(mat);
         //人脸检测
-        mat = t_7.detectFace(mat);
+        mat = detectFace(mat);
         //显示mat图片
-        t_7.showImage(mat);
-
+        showImage(mat);
     }
 
 }
