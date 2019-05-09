@@ -25,7 +25,7 @@ public class t_9 {
     }
     //mat数组转行向量
     public static Mat GetAllsamples(MatVector images){
-        //所有mat转为一行
+        //存放所有mat
         Mat allsamples = new Mat();
         Mat mat;
         //mat转行向量
@@ -133,8 +133,7 @@ public class t_9 {
             //调用识别-找到最匹配的特征脸的ID
             int ID = Test(_face,trainData,resultData);
             //原图上标出 特征脸ID+欧氏距离
-            //TODO  face_i
-
+            putText(_face, "ID:"+ID,new Point(460, 200),FONT_HERSHEY_PLAIN,2.0,new Scalar(0,255,0,3),1, 8, false);
         }
         //显示释放否则内存溢出
         return src;
