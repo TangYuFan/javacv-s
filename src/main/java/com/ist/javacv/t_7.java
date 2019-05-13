@@ -1,8 +1,7 @@
 package com.ist.javacv;
 
 import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacpp.opencv_core.Size;
-import org.bytedeco.javacpp.opencv_core.Mat;
+import org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.opencv_objdetect;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
@@ -43,7 +42,7 @@ public class t_7 {
     public static Mat detectFace(Mat src)
     {
         //面部识别级联分类器
-        opencv_objdetect.CascadeClassifier cascade = new opencv_objdetect.CascadeClassifier("D:\\my_opencv\\opencv\\data\\lbpcascades\\lbpcascade_frontalface.xml");
+        opencv_objdetect.CascadeClassifier cascade = new opencv_objdetect.CascadeClassifier("E:\\work\\opencv\\opencv-master\\data\\lbpcascades\\lbpcascade_frontalface.xml");
         //矢量图初始化
         Mat grayscr=new Mat();
         //彩图灰度化
@@ -57,13 +56,17 @@ public class t_7 {
         {
             opencv_core.Rect face_i=faces.get(i);
             //人脸画框
-            rectangle(src, face_i, new opencv_core.Scalar(0, 0, 255, 1));
+            rectangle(src, face_i, new Scalar(0, 0, 255, 1));
             //人脸截图保存到本地(保持相同像素)
             Mat face = new Mat(src,face_i);
             Size size= new Size(55,55);
             Mat _face = new Mat(size,CV_32S);
             resize(face,_face,size);
-            imwrite("D:\\test\\face\\"+i+".jpg",_face);
+            imwrite("E:\\work\\atest\\face2\\"+i+".jpg",_face);
+            //原图上加文本
+            //int x  = face_i.x()-(face_i.width()/2);
+            //int y  = face_i.y();
+            //putText(src, "Tang", new Point(x,y), CV_FONT_ITALIC, 1, new Scalar(0, 0, 255, 1), 2, 0, false);
         }
         //显示释放否则内存溢出
         return src;
@@ -71,7 +74,7 @@ public class t_7 {
 
     public static void main(String args[]){
         //读取图片转mat
-        Mat mat = readImage("D:\\test\\1.jpg");
+        Mat mat = readImage("E:\\work\\atest\\KH{}_40S[`)}L~ARV05DTBJ.png");
         //显示mat图片
         showImage(mat);
         //人脸检测

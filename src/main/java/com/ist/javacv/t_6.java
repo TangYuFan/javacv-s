@@ -12,8 +12,9 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import static org.bytedeco.javacpp.opencv_imgcodecs.IMREAD_COLOR;
-import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
+import static org.bytedeco.javacpp.opencv_core.CV_32S;
+import static org.bytedeco.javacpp.opencv_imgcodecs.*;
+import static org.bytedeco.javacpp.opencv_imgproc.resize;
 
 /**
  * @desc : frame(图像帧)/mat(矩阵)转换,mat矩阵图片显示
@@ -58,15 +59,37 @@ public class t_6 {
     }
 
 
+    //批量转换图片格式
+    public static void toJpg(String in,String out,String kind,String name){
+
+        File file = new File(in);
+        int i = 1;
+        for(File f:file.listFiles()){
+            //图片转mat
+            Mat m = readImage(f.getPath());
+            //修改尺寸
+            Size size= new Size(60,60);
+            Mat _m = new Mat(size,CV_32S);
+            resize(m,_m,size);
+            imwrite(out+"\\"+name+"_"+i+"."+kind,_m);
+            i++;
+        }
+
+
+    }
+
 
     public static void main(String args[]){
 
         //读取图片转mat
-        Mat mat = t_6.readImage("D:\\1.jpg");
+        //Mat mat = t_6.readImage("D:\\1.jpg");
         //显示mat图片
-        t_6.showImage(mat);
+        //t_6.showImage(mat);
         //保存mat图片
-        t_6.saveMatImage(mat,"D:\\2.jpg");
+        //t_6.saveMatImage(mat,"D:\\2.jpg");
+
+        toJpg("E:\\work\\test\\att_faces\\s10","E:\\work\\test\\face","jpg","Eoe");
+
     }
 
 }

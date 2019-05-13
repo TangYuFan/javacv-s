@@ -3,7 +3,12 @@ package com.ist.javacv;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.opencv_objdetect;
+import org.bytedeco.javacv.CanvasFrame;
+import org.bytedeco.javacv.OpenCVFrameConverter;
 
+import javax.swing.*;
+import java.io.File;
+import java.util.HashMap;
 import static org.bytedeco.javacpp.helper.opencv_core.cvNorm;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_core.FileStorage.READ;
@@ -49,6 +54,27 @@ public class t_9 {
         Mat mat  = f.get("tag").mat();
         System.out.println("mat:"+mat.cols()+","+mat.rows());
         return mat;
+    }
+    //名字数组转xml
+    public static void SaveName(String [] arr,String path){
+        FileStorage f = new FileStorage(path,WRITE);
+        for(int i= 0;i<arr.length;i++){
+            f.write("tag_"+i,arr[i]);
+        }
+        f.release();
+    }
+    //匹配名字
+    public static String GetName(int i,String path){
+        FileStorage f = new FileStorage(path,READ);
+        String name  = f.get("tag_"+i).asBytePointer().getString();
+        return name;
+    }
+    //显示mat矩阵对应的图片
+    public static void showImage(Mat mat){
+        OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
+        CanvasFrame canvas = new CanvasFrame("人脸", 1);
+        canvas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        canvas.showImage(converter.convert(mat));
     }
     //训练
     public static Mat Train(String trainData) {
@@ -105,12 +131,11 @@ public class t_9 {
         return -1;
     }
 
-
     //人脸检测-将截取的人脸调用test
-    public static Mat DetectFace(Mat src,String trainData,String resultData)
+    public static Mat DetectFace(Mat src,String trainData,String resultData,String nameData)
     {
         //面部识别级联分类器
-        opencv_objdetect.CascadeClassifier cascade = new opencv_objdetect.CascadeClassifier("D:\\my_opencv\\opencv\\data\\lbpcascades\\lbpcascade_frontalface.xml");
+        opencv_objdetect.CascadeClassifier cascade = new opencv_objdetect.CascadeClassifier("E:\\work\\opencv\\opencv-master\\data\\lbpcascades\\lbpcascade_frontalface.xml");
         //矢量图初始化
         Mat grayscr=new Mat();
         //彩图灰度化
@@ -119,6 +144,7 @@ public class t_9 {
         equalizeHist(grayscr,grayscr);
         opencv_core.RectVector faces=new opencv_core.RectVector();
         cascade.detectMultiScale(grayscr, faces);
+        System.out.println("开始检测:");
         //size就是检测到的人脸个数
         for(int i=0;i<faces.size();i++)
         {
@@ -132,34 +158,57 @@ public class t_9 {
             resize(face,_face,size);
             //调用识别-找到最匹配的特征脸的ID
             int ID = Test(_face,trainData,resultData);
-            //原图上标出 特征脸ID+欧氏距离
-            putText(_face, "ID:"+ID,new Point(460, 200),FONT_HERSHEY_PLAIN,2.0,new Scalar(0,255,0,3),1, 8, false);
+            //原图上标出 特征脸name
+            int x  = face_i.x()-(face_i.width()/2);
+            int y  = face_i.y();
+            String name = GetName(ID,nameData);
+            putText(src, name, new Point(x,y), CV_FONT_ITALIC, 1, new Scalar(0, 0, 255, 1), 2, 0, false);
+            System.out.println("识别到:id="+ID+",name="+name);
         }
         //显示释放否则内存溢出
         return src;
     }
 
+    //批量读取图片
+    public static HashMap<Mat,String> loadImages(String path){
+        HashMap <Mat,String> mats = new HashMap<>();
+        File file = new File(path);
+        if(file.isDirectory()){
+            File[] pics = file.listFiles();
+            for(int i=0;i<pics.length;i++){
+                File f = pics[i];
+                if(f.getName().contains(".jpg")||f.getName().contains(".jpeg")||f.getName().contains(".png")||f.getName().contains(".pgm")){
+                    //图片
+                    Mat mat = readImage(f.getPath());
+                    //图片名称
+                    String name = f.getName();
+                    mats.put(mat,name);
+                }
+            }
+        }
+        return mats;
+    }
 
     public static void main(String args[]){
-        //Train
-        //mat数组
+
+        //批量读取图片
+        HashMap<Mat,String> map = loadImages("E:\\work\\atest\\face2");
+        Mat[] matArr = new Mat[map.size()];
+        String[] namtes = new String[map.size()];//顺序保存每个特征脸矩阵的文件名
+        int i =0;
+        for(Mat m:map.keySet()){
+            matArr[i]=m;
+            namtes[i]=map.get(m).split("\\.")[0];
+            i++;
+        }
         MatVector images = new MatVector();
-        Mat [] matArry = new Mat[10];
-        matArry[0]=readImage("E:\\work\\test\\train\\0.jpg");
-        matArry[1]=readImage("E:\\work\\test\\train\\1.jpg");
-        matArry[2]=readImage("E:\\work\\test\\train\\2.jpg");
-        matArry[3]=readImage("E:\\work\\test\\train\\3.jpg");
-        matArry[4]=readImage("E:\\work\\test\\train\\4.jpg");//鹿晗
-        matArry[5]=readImage("E:\\work\\test\\train\\5.jpg");
-        matArry[6]=readImage("E:\\work\\test\\train\\6.jpg");
-        matArry[7]=readImage("E:\\work\\test\\train\\7.jpg");//王源
-        matArry[8]=readImage("E:\\work\\test\\train\\8.jpg");
-        matArry[9]=readImage("E:\\work\\test\\train\\9.jpg");//电鳗
-        images.put(matArry);
+        images.put(matArr);
+
         //mat数组转行向量
         Mat mats = GetAllsamples(images);
         //训练数据保存到xml
         SaveMat(mats,"./target/Mats.xml");
+        SaveName(namtes,"./target/Names.xml");
         //训练得到特征脸集合
         Mat result = Train("./target/Mats.xml");
         //特征脸集合保存到xml
@@ -167,7 +216,8 @@ public class t_9 {
 
         //Test
         //人脸检测+识别
-        Mat mat = readImage("E:\\work\\test\\train\\wuyifan.jpg");//另找一张鹿晗
-        DetectFace(mat,"./target/Mats.xml","./target/Result.xml");
+        Mat mat = readImage("E:\\work\\atest\\face\\face.png");
+        Mat re = DetectFace(mat,"./target/Mats.xml","./target/Result.xml","./target/Names.xml");
+        showImage(re);
     }
 }
