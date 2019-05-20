@@ -18,6 +18,12 @@ import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 import static org.bytedeco.javacpp.opencv_imgproc.resize;
 
+
+/**
+ * @desc : PCA+KNN 人脸识别
+ * @auth : TYF
+ * @date : 2019-05-20 - 13:20
+ */
 public class t_9 {
 
     //图片转mat

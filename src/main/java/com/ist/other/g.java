@@ -6,7 +6,7 @@ package com.ist.other;
  * @auth : TYF
  * @date : 2019-05-14 - 17:12
  */
-public class t_car {
+public class g {
 
 
     //https://www.cnblogs.com/lcchuguo/p/4060575.html

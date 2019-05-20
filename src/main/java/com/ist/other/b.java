@@ -24,7 +24,7 @@ import static org.bytedeco.javacpp.opencv_ml.ROW_SAMPLE;
  * 能选择到的最好的分裂跟随机选择相比已经基本没有什么有意义的改进了
  */
 
-public class t_10 {
+public class b {
 
 
     //批量读取图片

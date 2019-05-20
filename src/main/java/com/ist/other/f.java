@@ -6,7 +6,7 @@ package com.ist.other;
  * @auth : TYF
  * @date : 2019-05-14 - 17:04
  */
-public class t_12 {
+public class f {
 
 
 

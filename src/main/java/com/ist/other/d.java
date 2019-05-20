@@ -8,7 +8,7 @@ import org.bytedeco.javacpp.opencv_ml.NormalBayesClassifier;
  * @auth : TYF
  * @date : 2019-05-14 - 11:35
  */
-public class t_11 {
+public class d {
 
 
     public static void main(String args[]){
