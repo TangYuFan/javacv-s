@@ -6,7 +6,6 @@ import org.bytedeco.javacpp.opencv_imgproc;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter.ToMat;
 import org.opencv.imgproc.Imgproc;
 import javax.imageio.ImageIO;
@@ -16,7 +15,6 @@ import java.io.File;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgcodecs.IMREAD_COLOR;
 import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
-import static org.bytedeco.javacpp.opencv_imgcodecs.imwrite;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 import static org.opencv.core.Core.BORDER_DEFAULT;
 
@@ -151,29 +149,29 @@ public class t_1 {
     public static void main(String args[]){
 
         //1.原始图片
-        Mat mat = imageToMat("D:\\my_easypr\\test_data\\car_pic2.jpg");
-        Mat source = imageToMat("D:\\my_easypr\\test_data\\car_pic2.jpg");
-        //showMatImage(mat,"原始");
+        Mat mat = imageToMat("E:\\work\\easypr\\test_data\\car_pic.png");
+        Mat source = imageToMat("E:\\work\\easypr\\test_data\\car_pic.png");
+        showMatImage(mat,"1.原始");
 
         //2.高斯模糊
         Mat gb_mat = gaussianBlur(mat);
-        //showMatImage(gb_mat,"高斯模糊");
+        showMatImage(gb_mat,"2.高斯模糊");
 
         //3.灰度化
         Mat gr_mat = grayTrans(gb_mat);
-        //showMatImage(gr_mat,"灰度化");
+        showMatImage(gr_mat,"3.灰度化");
 
         //4.边缘检测(Sobel)
         Mat sb_mat = sobelTrans(gr_mat);
-        //showMatImage(sb_mat,"边缘检测");
+        showMatImage(sb_mat,"4.边缘检测");
 
         //5.二值化
         Mat tw_mat = twMat(sb_mat);
-        //showMatImage(tw_mat,"二值化");
+        showMatImage(tw_mat,"5.二值化");
 
         //6.闭操作
         Mat cl_mat = morphologyExClose(tw_mat);
-        //showMatImage(cl_mat,"闭操作");
+        showMatImage(cl_mat,"6.闭操作");
 
         //8.筛选矩形
         MatVector outLines = getOutLineMat(cl_mat);
@@ -181,10 +179,10 @@ public class t_1 {
 
         //9.轮廓描边
         Mat li_mat = drawOutLine(source,resLines);
-        //showMatImage(li_mat,"轮廓");
+        showMatImage(li_mat,"7.轮廓");
 
         //10.轮廓保存为mat得到正负样本
-        reShape(resLines);
+        //reShape(resLines);
 
 
     }
