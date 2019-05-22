@@ -20,7 +20,7 @@ import static org.opencv.core.Core.BORDER_DEFAULT;
  */
 public class t_1 {
 
-    //显示mat图片
+    //显示mat
     public static void showMatImage(Mat mat,String tit){
         ToMat converter = new ToMat();
         CanvasFrame canvas = new CanvasFrame(tit, 1);
@@ -28,13 +28,21 @@ public class t_1 {
         canvas.showImage(converter.convert(mat));
     }
 
+    //显示mat数组
+    public static void showMatImages(MatVector vector){
+        for(int i=0;i<vector.get().length;i++){
+            Mat te = vector.get()[i];
+            showMatImage(te,(i+1)+"");
+        }
+    }
+
+
     //1.预处理
     public static MatVector preProcess(String path){
         //读取图片
         Mat image = imread(path, IMREAD_COLOR);
         Mat source = imread(path, IMREAD_COLOR);
         Mat _source = imread(path, IMREAD_COLOR);
-        //截取线圈内 todo
         //高斯模糊(5*5模版)
         Size size= new Size(5,5);
         opencv_imgproc.GaussianBlur(image,image,size,0);
@@ -61,29 +69,37 @@ public class t_1 {
             float h = (float)opencv_imgproc.boundingRect(_mats[i]).height();
             double s1 = opencv_imgproc.contourArea(_mats[i]);
             //外框宽高比
-            if(((w/h)>2.5?true:false) &&((w/h)<5?true:false)){
+            if(((w/h)>2.5?true:false) &&((w/h)<5?true:false) && s1>0.0){
                 RotatedRect rect = opencv_imgproc.minAreaRect(_mats[i]);//最小外接矩形
-                //最小外接矩形面积和轮廓面积比
-                int s2 = rect.boundingRect().area();
-                if(((s2/s1)>1.2?true:false) &&((s2/s1)<2?true:false)){
-                    //摆正 todo
-                    Size s= new Size(240,60);
-                    Mat _m = new Mat(s,CV_32S);
-                    resize(new Mat(_source,rect.boundingRect()),_m,s);//从原图截取为mat、修改尺寸、保存到_m
-                    res.push_back(_m);//放入结果集
+                //旋转偏折
+                //修改尺寸
+                Size s= new Size(240,60);
+                Mat _m = new Mat(s,CV_32S);
+                try{
+                    //截取(轮廓得到的矩形坐标可能在原图外部截取时会抛异常)
+                    resize(new Mat(_source,rect.boundingRect()),_m,s);
+                }catch (RuntimeException e){
+                    continue;
                 }
+                res.push_back(_m);//放入结果集
             }
         }
         return res;
     }
 
     public static void main(String args[]){
+
+
+        Long tS = System.currentTimeMillis();
+
         //返回可能包含有车牌的截图
-        MatVector mats = preProcess("D:\\my_easypr\\test_data\\2.jpg");
+        MatVector mats = preProcess("E:\\work\\easypr\\test_data\\1.png");
+        Long tE = System.currentTimeMillis();
+
+        System.out.println("预处理耗时:"+(tE-tS)+"ms");
+
         //循环显示
-        for(int i=0;i<mats.get().length;i++){
-            showMatImage(mats.get()[i],"车牌域");
-        }
+        showMatImages(mats);
     }
 
 }
