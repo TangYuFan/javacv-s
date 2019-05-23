@@ -10,6 +10,7 @@ import javax.swing.*;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgcodecs.IMREAD_COLOR;
 import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
+import static org.bytedeco.javacpp.opencv_imgcodecs.imwrite;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 import static org.opencv.core.Core.BORDER_DEFAULT;
 
@@ -36,6 +37,13 @@ public class t_1 {
         }
     }
 
+    //保存截图
+    public static void saveMatImage(MatVector vector,String path){
+        for(int i=0;i<vector.get().length;i++){
+            Mat te = vector.get()[i];
+            imwrite(path+"\\"+i+".png",te);
+        }
+    }
 
     //1.预处理
     public static MatVector preProcess(String path){
@@ -73,7 +81,7 @@ public class t_1 {
                 RotatedRect rect = opencv_imgproc.minAreaRect(_mats[i]);//最小外接矩形
                 //旋转偏折
                 //修改尺寸
-                Size s= new Size(240,60);
+                Size s= new Size(120,30);
                 Mat _m = new Mat(s,CV_32S);
                 try{
                     //截取(轮廓得到的矩形坐标可能在原图外部截取时会抛异常)
@@ -89,17 +97,13 @@ public class t_1 {
 
     public static void main(String args[]){
 
-
-        Long tS = System.currentTimeMillis();
-
         //返回可能包含有车牌的截图
-        MatVector mats = preProcess("E:\\work\\easypr\\test_data\\1.png");
-        Long tE = System.currentTimeMillis();
-
-        System.out.println("预处理耗时:"+(tE-tS)+"ms");
+        MatVector mats = preProcess("D:\\my_easypr\\test_data\\1.jpg");
 
         //循环显示
         showMatImages(mats);
-    }
+        //保存图片
+        //saveMatImage(mats,"D:\\my_easypr\\trainData");
 
+    }
 }
