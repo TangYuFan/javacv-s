@@ -23,6 +23,7 @@ import static org.bytedeco.javacpp.opencv_ml.ROW_SAMPLE;
 import static org.bytedeco.javacpp.opencv_ml.SVM.C_SVC;
 import static org.bytedeco.javacpp.opencv_ml.SVM.RBF;
 import static org.bytedeco.javacv.JavaCV.FLT_EPSILON;
+import static org.opencv.ml.SVM.LINEAR;
 
 /**
  * @desc : SVM对正负样本分类，得到包含车牌的图片
@@ -86,23 +87,23 @@ public class t_2 {
         //svm类型:C_SVC/C类支撑向量分类机,NU_SVC/类支撑向量分类机,ONE_CLASS/单分类器,EPS_SVR/类支撑向量回归机,NU_SVR/类支撑向量回归机
         svm.setType(C_SVC);
         //核函数类型:LINEAR/线性,POLY/多项式,RBF/径向量,SIGMOID/二层神经收集
-        svm.setKernel(RBF);
+        svm.setKernel(LINEAR);
         //POLY内核函数的参数degree
-        svm.setDegree(0);
+        //svm.setDegree(0);
         //POLY/RBF/SIGMOID内核函数
-        svm.setGamma(1);
+        //svm.setGamma(1);
         //POLY/SIGMOID内核函数的参数coef0
-        svm.setCoef0(0);
+        //svm.setCoef0(0);
         //NU_SVC/ONE_CLASS/NU_SVR类型SVM的参数
-        svm.setNu(0);
+        //svm.setNu(0);
         //EPS_SVR类型SVM的参数
-        svm.setP(0);
+        //svm.setP(0);
         //C_SVC/EPS_SVR/NU_SVR类型SVM的参数C
-        svm.setC(1);
+        //svm.setC(1);
         //C_SVC类型SVM的可选权重
         //svm.setClassWeights();
         //终止条件(类型、迭代最大次数、阈值)
-        TermCriteria ct = new TermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS,1000,FLT_EPSILON);
+        TermCriteria ct = new TermCriteria(CV_TERMCRIT_ITER,1000,FLT_EPSILON);
         svm.setTermCriteria(ct);
 
         //train数据
@@ -159,28 +160,46 @@ public class t_2 {
 
     public static void main(String args[]){
 
-        Long t1 = System.currentTimeMillis();
-
         //获取训练、标签数据mat
-        loadTrainData("D:\\my_easypr\\trainData\\0","D:\\my_easypr\\trainData\\1","./target/svmTrainData.xml","./target/svmLabelData.xml");
-
-        Long t2 = System.currentTimeMillis();
+        //loadTrainData("D:\\my_easypr\\trainData\\0","D:\\my_easypr\\trainData\\1","./target/svmTrainData.xml","./target/svmLabelData.xml");
 
         //训练
-        trainSvm("./target/svmTrainData.xml","./target/svmLabelData.xml","./target/svmModulData.xml");
-
-        Long t3 = System.currentTimeMillis();
+        //trainSvm("./target/svmTrainData.xml","./target/svmLabelData.xml","./target/svmModulData.xml");
 
         //预测
-        float res = testSvm("./target/svmModulData.xml","D:\\my_easypr\\trainData\\0\\2.png");
+        //float res = testSvm("./target/svmModulData.xml","D:\\my_easypr\\testData\\1\\1.jpg");
+        //System.out.println("res:"+res);
 
-        Long t4 = System.currentTimeMillis();
-
-        System.out.println("样本读取:"+(t2-t1));
-        System.out.println("训练:"+(t3-t2));
-        System.out.println("预测:"+(t4-t3));
-        System.out.println("标签:"+res);
-
+        int count = 0 ;
+        int error = 0 ;
+        //正例测试
+        for(int i=1;i<=50;i++){
+            float x = testSvm("./target/svmModulData.xml","D:\\my_easypr\\testData\\1\\"+i+".jpg");
+            //判断正确
+            if(x==1.0){
+                count++;
+            }
+            //判断错误
+            else{
+                error++;
+            }
+        }
+        System.out.println("正例测试:"+count+"正确,"+error+"错误");
+        count = 0 ;
+        error = 0 ;
+        //负例测试
+        for(int i=0;i<=127;i++){
+            float x = testSvm("./target/svmModulData.xml","D:\\my_easypr\\testData\\0\\"+i+".jpg");
+            //判断正确
+            if(x==0.0){
+                count++;
+            }
+            //判断错误
+            else{
+                error++;
+            }
+        }
+        System.out.println("负例测试:"+count+"正确,"+error+"错误");
     }
 
 

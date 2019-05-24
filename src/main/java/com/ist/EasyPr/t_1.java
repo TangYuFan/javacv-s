@@ -67,7 +67,7 @@ public class t_1 {
         MatVector  mats = new MatVector();
         opencv_imgproc.findContours(image,mats,CV_RETR_EXTERNAL,CV_CHAIN_APPROX_NONE);
         opencv_imgproc.drawContours(source,mats,-1,new Scalar(0,255));//原图轮廓描边
-        showMatImage(source,"轮廓");
+        //showMatImage(source,"轮廓");
         //轮廓筛选并截取
         MatVector res = new MatVector();
         Mat[] _mats = mats.get();
