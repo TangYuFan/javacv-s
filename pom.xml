@@ -53,20 +53,20 @@
 		<!-- tess4j -->
 
 		<!-- dl4j -->
-		<dependency>
+		<dependency><!--深度学习库-->
 			<groupId>org.deeplearning4j</groupId>
 			<artifactId>deeplearning4j-core</artifactId>
-			<version>1.0.0-beta3</version>
+			<version>0.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nd4j</groupId>
 			<artifactId>nd4j-native-platform</artifactId>
-			<version>1.0.0-beta3</version>
+			<version>0.8.0</version>
 		</dependency>
-		<dependency>
+		<dependency><!--基本的数据处理如归一化向量化等等-->
 			<groupId>org.datavec</groupId>
 			<artifactId>datavec-api</artifactId>
-			<version>1.0.0-beta3</version>
+			<version>0.8.0</version>
 		</dependency>
 		<!-- dl4j -->
 
