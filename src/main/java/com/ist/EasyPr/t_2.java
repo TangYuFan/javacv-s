@@ -59,6 +59,8 @@ public class t_2 {
             temp.reshape(1, 1).row(0).convertTo(convertMat, CV_32F);//转一行
             trainData.push_back(convertMat);//塞入样本
             labelData.push_back(new Mat().put(Mat.zeros(new Size(1,1),CV_32SC1)));//塞入标签0(无车牌)
+
+
         }
         //正例
         for(int i=1;i<=pics1.length;i++){
