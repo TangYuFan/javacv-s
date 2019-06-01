@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ist</groupId>
-	<artifactId>javaCV</artifactId>
+	<artifactId>javacv</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>javaCV</name>
+	<name>javacv</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
