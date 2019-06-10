@@ -1,4 +1,4 @@
-package com.ist.javacv;
+package com.ist.other;
 
 /**
  * @desc : K均值
