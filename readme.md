@@ -121,7 +121,7 @@
 					</tr>
 				</tbody>
 			</table>
-		</div> &nbsp;
+		</div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<div class="span4">
 			<h3>
 				tess4j
