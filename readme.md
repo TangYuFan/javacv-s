@@ -84,7 +84,7 @@
 							t_7
 						</td>
 						<td>
-							<span>单个图片人脸检测</span>
+							<span>lbpcascade_frontalface单个图片人脸检测</span>
 						</td>
 						<td>
 						</td>
@@ -94,7 +94,7 @@
 							t_8
 						</td>
 						<td>
-							<span>视频人脸检测</span>
+							<span>lbpcascade_frontalface视频人脸检测</span>
 						</td>
 						<td>
 						</td>
