@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="span4">
 			<h3>
-				dl4j
+				javacv
 			</h3>
 			<table class="table table-condensed table-hover">
 				<thead>
